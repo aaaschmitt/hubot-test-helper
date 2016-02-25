@@ -12,6 +12,7 @@
   "keywords": [
     "hubot"
   ],
+  "version": "0.0.0",
   "dependencies": {
     "hubot": ">= 2.6.0 < 3"
   },
