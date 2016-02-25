@@ -88,7 +88,7 @@ class Helper
         else
           robot.loadFile Path.dirname(@scriptsPath), Path.basename(@scriptsPath)
       when 'function'
-        @scriptsPath()
+        @scriptsPath(robot)
       else
         throw 'ERROR: Invalid scriptsPath provided to constructor for Helper'
 
