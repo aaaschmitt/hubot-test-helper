@@ -70,7 +70,7 @@ class Helper
   @Response = MockResponse
 
   constructor: (scriptsPath) ->
-    @scriptsPath = Path.resolve(Path.dirname(module.parent.filename), scriptsPath)
+    @scriptsPath = scriptsPath
 
   createRoom: (options={}) ->
     robot = new MockRobot(options.httpd)
@@ -78,11 +78,19 @@ class Helper
     if 'response' of options
       robot.Response = options.response
 
-    if Fs.statSync(@scriptsPath).isDirectory()
-      for file in Fs.readdirSync(@scriptsPath).sort()
-        robot.loadFile @scriptsPath, file
-    else
-      robot.loadFile Path.dirname(@scriptsPath), Path.basename(@scriptsPath)
+    switch typeof @scriptsPath
+      when 'string'
+        @scriptsPath = Path.resolve(Path.dirname(module.parent.filename), @scriptsPath)
+
+        if Fs.statSync(@scriptsPath).isDirectory()
+          for file in Fs.readdirSync(@scriptsPath).sort()
+            robot.loadFile @scriptsPath, file
+        else
+          robot.loadFile Path.dirname(@scriptsPath), Path.basename(@scriptsPath)
+      when 'function'
+        @scriptsPath()
+      else
+        throw 'ERROR: Invalid scriptsPath provided to constructor for Helper'
 
     robot.brain.emit 'loaded'
 
